@@ -1,0 +1,722 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Agency Clients",
+    "license": {
+      "name": ""
+    }
+  },
+  "servers": [
+    {
+      "url": "{protocol}://{host}:{port}/api/v1",
+      "variables": {
+        "protocol": {
+          "default": "https",
+          "enum": ["http", "https"]
+        },
+        "port": {
+          "enum": ["9000", "4000"],
+          "default": "4000"
+        },
+        "host": {
+          "default": "api.AgencyClients.com",
+          "enum": ["localhost", "api-dev.AgencyClients.com"]
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/token": {
+      "get": {
+        "summary": "Get a Token",
+        "operationId": "getToken",
+        "tags": ["AuthToken"],
+        "responses": {
+          "200": {
+            "description": "Success response with Endpoint.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failure response with status as false and error from backend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agencyClient": {
+      "post": {
+        "summary": "Create A Agency Client Record",
+        "operationId": "createAgencyClient",
+        "tags": ["Agency"],
+        "requestBody": {
+          "description": "This api will allow to create Agency Client records.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgencyClientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success response with Endpoint.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgencyClientResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failure response with status as false and error from backend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agencyClients": {
+      "get": {
+        "summary": "List all Agency Clients",
+        "operationId": "getAgencyClient",
+        "tags": ["Agency"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Content-Type",
+            "description": "Content type of the body, should always be set to application/json unless specified otherwise.",
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            },
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token for authorization purpose.",
+            "schema": {
+              "type": "string",
+              "format": "bearer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response with Endpoint.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAgencyClientResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Failure response with status as false and error of unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failure message with status as false and error from backend.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/{id}": {
+      "put": {
+        "summary": "Update Client Details",
+        "operationId": "Update Client By Id",
+        "tags": ["Client"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Content-Type",
+            "description": "Content type of the body, should always be set to application/json unless specified otherwise.",
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            },
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token for authorization purpose.",
+            "schema": {
+              "type": "string",
+              "format": "bearer"
+            },
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the client to update.",
+            "schema": {
+              "type": "string",
+              "format": "hex"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request to update a Client Details.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response with status as true and data set to the updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpdateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Failure response with status as false and error of unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Failure response with status as false and error of Not Found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failure message with status as false and error from backend.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {}
+    },
+    "schemas": {
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": true,
+            "example": true
+          },
+          "token": {
+            "type": "string",
+            "format": "bearer",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWNmYjU3OWQ1MDE3OTFmOGVjM2Y1MGUiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE1OTA3NDQ1NDJ9.TUoDPazRS_fLhRSXPJHiIAlNCnoYKPW1BEusrEJOkzg"
+          }
+        },
+        "required": ["status", "token"]
+      },
+      "Agency": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "hex",
+            "example": "5c188d0377ebe21d86dc4fe1"
+          },
+          "name": {
+            "type": "string",
+            "example": "ici intel"
+          },
+          "Address1": {
+            "type": "string",
+            "example": "11 cross"
+          },
+          "Address2": {
+            "type": "string",
+            "example": "Opp SouthGrand"
+          },
+          "state": {
+            "type": "string",
+            "example": "AP"
+          },
+          "city": {
+            "type": "string",
+            "example": "kurnool"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "1234567890"
+          }
+        }
+      },
+      "AgencyClientRequest": {
+        "type": "object",
+        "properties": {
+          "agency": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "ici intel"
+              },
+              "Address1": {
+                "type": "string",
+                "example": "11 cross"
+              },
+              "Address2": {
+                "type": "string",
+                "example": "Opp SouthGrand"
+              },
+              "state": {
+                "type": "string",
+                "example": "AP"
+              },
+              "city": {
+                "type": "string",
+                "example": "Hyderabad"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "example": "1234567890"
+              }
+            }
+          },
+
+          "client": {
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Alias"
+              },
+              "email": {
+                "type": "string",
+                "example": "email@yopmail.com"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "example": "2345678901"
+              },
+              "totalBill": {
+                "type": "string",
+                "example": "56789"
+              }
+            }
+          }
+        },
+        "required": ["name", "Address1", "state", "city", "phoneNumber"]
+      },
+      "AgencyClientResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": true,
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "agencyEntry": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "format": "hex",
+                    "example": "5ed0024e93b0602b75d290f5"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "DTDT"
+                  },
+                  "Address1": {
+                    "type": "string",
+                    "example": "11th cross"
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "AP"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "kadapa"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "example": "6523456789"
+                  }
+                }
+              },
+              "clientEntry": {
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "format": "hex",
+                    "example": "5ed0024e93b0602b75d290f6"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Ishwarya"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "nisha@yopmail.com"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "example": "1234567890"
+                  },
+                  "totalBill": {
+                    "type": "string",
+                    "example": "67897"
+                  },
+                  "agencyId": {
+                    "type": "string",
+                    "format": "hex",
+                    "example": "5ed0024e93b0602b75d290f5"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "getAgencyClientResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": true,
+            "example": true
+          },
+          "type": "array",
+          "data": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Alias"
+                },
+                "clientDetails": {
+                  "type": "object",
+                  "properties": {
+                    "clientDetails": {
+                      "type": "string",
+                      "example": "Shriga"
+                    },
+                    "totalBill": {
+                      "type": "Number",
+                      "example": 5678
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["name", "clientDetails"]
+      },
+      "Client": {
+        "type": "object",
+        "properties": {
+          "agencyId": {
+            "type": "string",
+            "format": "hex",
+            "example": "5c188d0377ebe21d86dc4fe1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alias"
+          },
+          "email": {
+            "type": "string",
+            "example": "alias@yopmail.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "1234567890"
+          },
+          "totalBill": {
+            "type": "Number",
+            "example": 5567
+          }
+        }
+      },
+      "ClientUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Alias"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@yopmail.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "2345678901"
+          },
+          "totalBill": {
+            "type": "string",
+            "example": "56789"
+          },
+          "agencyId": {
+            "type": "string",
+            "format": "hex",
+            "example": "5ecfb579d501791f8ec3f50d"
+          }
+        }
+      },
+      "ClientUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": true,
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "format": "hex",
+                "example": "5ed0024e93b0602b75d290f6"
+              },
+              "name": {
+                "type": "string",
+                "example": "Ishwarya"
+              },
+              "email": {
+                "type": "string",
+                "example": "nisha@yopmail.com"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "example": "1234567890"
+              },
+              "totalBill": {
+                "type": "string",
+                "example": "67897"
+              },
+              "agencyId": {
+                "type": "string",
+                "format": "hex",
+                "example": "5ed0024e93b0602b75d290f5"
+              }
+            }
+          }
+        }
+      },
+      "BadRequestResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "example": "BadRequestError"
+              },
+              "message": {
+                "type": "string",
+                "example": "Bad request bro"
+              }
+            }
+          }
+        }
+      },
+      "NotFoundResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "example": "NotFoundError"
+              },
+              "message": {
+                "type": "string",
+                "example": "Entity not found."
+              }
+            },
+            "required": ["error", "message"]
+          }
+        },
+        "required": ["status", "error"]
+      },
+      "ConflictError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "example": "ConflictError"
+              },
+              "message": {
+                "type": "string",
+                "example": "This operations produces conflicts with the current state."
+              }
+            },
+            "required": ["error", "message"]
+          }
+        },
+        "required": ["status", "error"]
+      },
+      "UnauthorizedError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "example": "UnauthorizedError"
+              },
+              "message": {
+                "type": "string",
+                "example": "Invalid Token."
+              }
+            },
+            "required": ["error", "message"]
+          }
+        },
+        "required": ["status", "error"]
+      },
+      "ForbiddenError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "example": "ForbiddenError"
+              },
+              "message": {
+                "type": "string",
+                "example": "You are not allowed to call this API"
+              }
+            },
+            "required": ["error", "message"]
+          }
+        },
+        "required": ["status", "error"]
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "example": "TypeError"
+              },
+              "message": {
+                "type": "string",
+                "example": "Cannot cast date to integer."
+              }
+            },
+            "required": ["error", "message"]
+          }
+        },
+        "required": ["status", "error"]
+      }
+    }
+  }
+}
