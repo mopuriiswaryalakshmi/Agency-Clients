@@ -139,7 +139,7 @@ const getAgencyClient = (request, response) => {
 
 const generateToken = (request, response) => {
   const token = jwt.sign(
-    { userId: "5ecfb579d501791f8ec3f50e", role: "admin" },
+    { userId: "5ecfb579d501791f8ec3f50e", role: "user" },
     process.env.JWT_SECRET
   );
   response.status(200).json({
