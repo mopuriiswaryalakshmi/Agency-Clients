@@ -6,14 +6,14 @@ const Joi = require("@hapi/joi");
 /*
  *  Import project packages here;
  */
-const { agency } = require("../models/agency");
-const { createAgencyAndClient, getAgencyClient } = require("../controllers/agency");
+const { createAgencyAndClient } = require("../controllers/agency");
 
 const createAgencyAndClientValidator = (request, response, next) => {
   const createOrderSchema = Joi.object({
     agency: Joi.object({
       name: Joi.string().required().label("Agency Name"),
       Address1: Joi.string().required().label("Agency Address1"),
+      Address2: Joi.string().optional().label("Agency Address2"),
       state: Joi.string().required().label("Agency State"),
       city: Joi.string().required().label("Agency City"),
       phoneNumber: Joi.string().max(12).required().label("Agency PhoneNumber"),

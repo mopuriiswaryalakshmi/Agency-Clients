@@ -29,7 +29,6 @@ const clientRouter = require("./src/routes/client");
  * Import configuration here;
  */
 const {
-  secret,
   apiPathDetails: { apiVersion, basePath },
 } = require("./config");
 
@@ -39,12 +38,14 @@ const {
 const { getLogger } = require("./src/utility/logs");
 
 process.on("exit", (code) => {
+  // eslint-disable-next-line no-console
   console.log(`Exiting with code ${code}`);
   mongoose.disconnect();
 });
 
 // eslint-disable-next-line no-unused-vars
 makeDatabaseConnection()
+  // eslint-disable-next-line no-unused-vars
   .then((connection) => {
     // eslint-disable-next-line no-console
     console.log("Connected to the database");
@@ -71,6 +72,7 @@ makeDatabaseConnection()
     app.use(`${basePath}/${apiVersion}`, agencyRouter);
     app.use(`${basePath}/${apiVersion}`, clientRouter);
 
+    // eslint-disable-next-line no-unused-vars
     app.use((error, request, response, next) => {
       if (typeof error === "string") {
         // custom application error
@@ -116,16 +118,16 @@ makeDatabaseConnection()
 
     http.createServer(app).listen(app.get("PORT"), (err) => {
       if (err) {
-        // eslint-diable-next-line no console
+        // eslint-disable-next-line no-console
         console.log(`Error while start up the server, ${err}`);
         process.exit(2);
       }
-      // eslint-diable-next-line no console
+      // eslint-disable-next-line no-console
       console.log(`HTTP server running on ${app.get("PORT")}`);
     });
   })
   .catch((error) => {
-    // eslint-diable-next-line no-console
+    // eslint-disable-next-line no-console
     console.log(error.message);
     process.exit(2);
   });

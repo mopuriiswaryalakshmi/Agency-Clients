@@ -2,7 +2,7 @@
  * Import external packages here;
  */
 const uniqid = require("uniqid");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 /*
  * Import project packages here
@@ -18,13 +18,32 @@ const createAgencyAndClient = (request, response) => {
   childLogger.info({ req: request });
   const { agency, client } = request.body;
   const agencyData = new Agency(agency);
+  // agencyData;
+  // const agencyData = new Agency(agency);
+
+  // db.userDetails
+  //   .insert({
+  //     userName: "Asha",
+  //     email: "asha@yopmail.com",
+  //     password: "asha@679",
+  //     houses: [
+  //       {
+  //         name: "Asha Geeth",
+  //         neighborhood: "sindhu",
+  //       },
+  //       {
+  //         name: "Prana",
+  //         neighborhood: "pushpa",
+  //       },
+  //     ],
+  //   })
   agencyData
-    .save()
+    .insert()
     .then((agencyEntry) => {
       const clientData = new Client(client);
       clientData.agencyId = agencyEntry._id;
       clientData
-        .save()
+        .insert()
         .then((clientEntry) => {
           response.status(201).json({
             status: true,
@@ -71,13 +90,32 @@ const getAgencyClient = (request, response) => {
     {
       $unwind: "$clientDetails",
     },
+    // {
+    //   $project: {
+    //     _id: false,
+    //     name: 1,
+    //     clientDetails: {
+    //       name: 1,
+    //       totalBill: 1,
+    //     },
+    //   },
+    // },
+    {
+      $sort: { "clientDetails.totalBill": -1 },
+    },
+    {
+      $group: {
+        _id: null,
+        data: { $first: "$$ROOT" },
+      },
+    },
     {
       $project: {
         _id: false,
-        name: 1,
+        name: "$data.name",
         clientDetails: {
-          name: 1,
-          totalBill: 1,
+          name: "$data.clientDetails.name",
+          totalBill: "$data.clientDetails.totalBill",
         },
       },
     },
@@ -100,15 +138,26 @@ const getAgencyClient = (request, response) => {
 };
 
 const generateToken = (request, response) => {
-  var token = jwt.sign(
+  const token = jwt.sign(
     { userId: "5ecfb579d501791f8ec3f50e", role: "admin" },
     process.env.JWT_SECRET
   );
   response.status(200).json({
     status: true,
-    token: token,
+    token,
   });
 };
+
+// const neighborhoodNames = (request, response) => {
+//   UserDetails.aggregate([
+//     {
+//       $unwind: "$houses",
+//     },
+//     {
+//       $match: { "houses.neighborhood": "Rabia" },
+//     },
+//   ]);
+// };
 
 module.exports = {
   createAgencyAndClient,
